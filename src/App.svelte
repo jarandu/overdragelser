@@ -203,7 +203,11 @@ label {
 	top: 10px;
 	font-size: 14px;
     display: flex;
-    width: 100%;
+    width: fit-content;
+		border: 2px solid rgba(0,0,0,0.35);
+		border-radius: 4px;
+		padding: 4px 8px;
+		background: white;
     align-items: center;
     justify-content: flex-end;
 	z-index: 1000;

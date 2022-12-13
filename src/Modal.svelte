@@ -28,7 +28,7 @@ $: date = new Date(activeSale.sale.date)
         <svg on:click={close} viewBox="0 0 10 10"><polyline points="1,9 9,1 5,5 1,1 9,9"></polyline></svg>
     </div>
     <h3>{ activeSale.sale.prop[0].address != null ? activeSale.sale.prop[0].address : activeSale.sale.prop[0].municipality }</h3>
-    <div class=hide class:hidden="{hide}">
+    <div class=nat-hide class:nat-hidden="{hide}">
         {#if activeSale.sale.multiple}
         <div class="multiple">
             <span on:click={expand}>(Flere eiendommer)</span>
@@ -88,10 +88,10 @@ $: date = new Date(activeSale.sale.date)
         margin: 0;
         font-size: 1.17em;
     }
-    .hide {
+    .nat-hide {
         transition: .2s .4s;
     }
-    .hide.hidden {
+    .nat-hide.nat-hidden {
         opacity: 0;
         transition: 0;
     }
