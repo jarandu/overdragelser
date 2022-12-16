@@ -100,6 +100,7 @@ $: date = new Date(activeSale.sale.date)
     .multiple {
         font-size: 0.9em;
         margin-top: 5px;
+        line-height: 1.15;
     }
     span {
         text-decoration: underline;

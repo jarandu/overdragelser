@@ -89,6 +89,9 @@ function populateMap() {
 
 // Actions
 function markerClick(saleId, fromList = false) {
+	// Find array index from SaleId, abort if not found
+	let i = sales.findIndex(x => x.saleId == saleId)
+	if (i == -1) return
 	// If from list and on mobile, jump
 	if (window.innerWidth < 680 && fromList) {
 		window.scrollBy({ top: document.querySelector('#Eiendomsoverdragelser').getBoundingClientRect().top - 50 })
@@ -96,8 +99,6 @@ function markerClick(saleId, fromList = false) {
 	// Reset
 	if (activeSalePolygons.getLayers() != null) activeSalePolygons.clearLayers().remove()
 	activeSale.area = 0
-	// Find array index from SaleId
-	let i = sales.findIndex(x => x.saleId == saleId)
 	// Register properties which share area/teig to prevent area duplicates
 	let matNumbTexts = []
 	// Make layer group and add to map
