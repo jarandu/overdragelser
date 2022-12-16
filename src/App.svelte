@@ -194,7 +194,7 @@ main {
 	position: relative;
 }
 .map {
-	height: 560px;
+	height: 860px;
 	max-height: 70vh;
 }
 label {
