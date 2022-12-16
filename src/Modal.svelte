@@ -67,7 +67,7 @@ $: date = new Date(activeSale.sale.date)
         font-family: adelle_sansregular;
         position: absolute;
         width: 300px;
-        max-width: 30%;
+        max-width: 33%;
         max-height: 500px;
         bottom: 30px;
         right: 30px;
@@ -79,10 +79,12 @@ $: date = new Date(activeSale.sale.date)
         box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.35);
         transition: .4s ease-in;
         --vertical: 20px;
+        line-height: 1.3;
     }
     .sale-modal.closed {
         overflow-y: hidden;
         max-height: 70px;
+        transition: none;
     }
     h3 {
         margin: 0;
@@ -93,7 +95,7 @@ $: date = new Date(activeSale.sale.date)
     }
     .nat-hide.nat-hidden {
         opacity: 0;
-        transition: 0;
+        transition: none;
     }
     .multiple {
         font-size: 0.9em;
@@ -148,6 +150,7 @@ $: date = new Date(activeSale.sale.date)
         margin-top:var(--vertical);
         opacity: 0.8;
         font-size: 0.9em;
+        line-height: 1.15;
     }
     @media (max-width: 680px) {
         .sale-modal {

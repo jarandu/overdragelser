@@ -204,10 +204,10 @@ label {
 	font-size: 14px;
     display: flex;
     width: fit-content;
-		border: 2px solid rgba(0,0,0,0.35);
-		border-radius: 4px;
-		padding: 4px 8px;
-		background: white;
+	border: 2px solid rgba(0,0,0,0.35);
+	border-radius: 4px;
+	padding: 4px 8px;
+	background: white;
     align-items: center;
     justify-content: flex-end;
 	z-index: 1000;
@@ -234,7 +234,7 @@ input[type=checkbox] {
 }
 @media (min-width: 992px) {
 	.map {
-		margin: 0 -150px;
+		margin: 0 163.333333px;
 	}
 }
 </style>
