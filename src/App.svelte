@@ -8,6 +8,8 @@ import * as turf from "@turf/turf"
 import Modal from "./Modal.svelte"
 import Locate from "./Locate.svelte"
 import List from "./List.svelte"
+import Lock from "./Lock.svelte"
+import Help from "./Help.svelte"
 
 export let initialSale
 
@@ -21,6 +23,7 @@ let map,
 	salesMarkerGroup = new MarkerClusterGroup({ showCoverageOnHover: false, zoomToBoundsOnClick: true }),
 	filterFree = false,
 	showModal = false,
+	locked = false,
 	saleIcon = L.divIcon({ className: 'map-marker', html: '<svg><use xlink:href="#saleIcon"></svg>' }),
 	saleIconFree = L.divIcon({ className: 'map-marker free-sale', html: '<svg><use xlink:href="#saleIcon"></svg>' })
 $:	activeSale = {}
@@ -49,6 +52,10 @@ function filterSalesToggle() {
 // Map setup
 function createMap(container) {
     map = L.map(container).setView([61, 9], 7).on('moveend', update)
+	if (L.Browser.mobile) {
+		setLock(true)
+		console.log("User on mobile, locked.")
+	}
 	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -86,6 +93,18 @@ function populateMap() {
 		markerClick(initialSale)
 	}
 }
+
+// Get data
+onMount(async () => {
+	fetch("https://api.nationen.no/kart/sales.json")
+		.then(response => response.json())
+		.then(data => {
+			sales = data
+			populateMap()
+			getSalesInView()
+		})
+		.catch(error => { console.log(error) })
+})
 
 // Actions
 function markerClick(saleId, fromList = false) {
@@ -129,19 +148,6 @@ function markerClick(saleId, fromList = false) {
 	activeSale.sale = sales[i]
 	showModal = true
 }
-
-// Get data
-onMount(async () => {
-	fetch("https://api.nationen.no/kart/sales.json")
-		.then(response => response.json())
-		.then(data => {
-			sales = data
-			populateMap()
-			getSalesInView()
-		})
-		.catch(error => { console.log(error) })
-})
-
 function resizeMap() { if (map) { map.invalidateSize() } }
 function closeModal() { 
 	showModal = !showModal
@@ -157,22 +163,32 @@ function locateUser() {
 	if (!navigator.geolocation) { console.log = 'Geolokalisering funker ikke i nettleseren din.' }
 	else { navigator.geolocation.getCurrentPosition(success, error)	}
 }
-function handleRowClick(event) {
-	markerClick(event.detail.id, true)
+function setLock(state) {
+	if (state) {
+		map._handlers.forEach((h) => { h.disable() })
+		locked = true
+	} else {
+		map._handlers.forEach((h) => { h.enable() })
+		locked = false
+	}
+	console.log("Locked: " + locked)
 }
 
 </script>
 <svelte:window on:resize={resizeMap} />
 
 <main>
+
+<Help />
 <div class="map-container">
 	<div class="map" use:createMap>
 		{#if showModal}<Modal {activeSale} on:close={closeModal} />{/if}
 		<label>Vis kun fritt salg <input type=checkbox bind:checked={filterFree} on:change={filterSalesToggle} ></label>
 		<Locate on:locate={locateUser} />
+		<Lock on:toggleLock={(event) => { setLock(event.detail.state) }} locked={locked} />
 	</div>
 </div>
-<List rows={salesInView} on:rowClick={handleRowClick} />
+<List rows={salesInView} on:rowClick={(event) => markerClick(event.detail.id, true)} />
 <div class="description">
 	Vi tar forbehold om at beregnet eiendomsareal kan avvike noe fra faktisk areal. Informasjon/kartdata om eiendommene leveres av Kartverket.
 </div>
@@ -235,7 +251,7 @@ input[type=checkbox] {
 }
 @media (min-width: 992px) {
 	.map {
-		margin: 0 163.333333px;
+		margin: 0 -163.333333px;
 	}
 }
 </style>

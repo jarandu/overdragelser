@@ -1,4 +1,40 @@
-<div>
-    <h3>Er du usikker på hvordan du bruker kartet?</h3>
-    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facilis, voluptatem veritatis? Magnam commodi harum ad, est facere modi ut ex. Blanditiis ea consectetur, sequi repellat tenetur cumque ipsum. Autem, fuga.</p>
+<script>
+let expand = false
+</script>
+
+<div class:open="{expand}">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <h4 on:click={() => { expand = !expand }}><svg viewBox="0 0 15 8" height=8 width=15><polyline points="1,1 8,7 14,1" /></svg> Hvordan bruker jeg kartet?</h4>
+    <div>
+        <p>Klikk på kartmarkørene for å forstørre området, eller få mer infomasjon om det enkelte salget. Huk av for "fritt salg" i hjørnet av kartet for å vise eiendommene som er solgt til markedspris.</p>
+    </div>
 </div>
+
+<style>
+    svg {
+        transition: .2s ease-in;
+        stroke-width: 1.5px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        stroke: black;
+        margin: 0 5px 1px 0;
+    }
+    div > div {
+        display: none;
+    }
+    div.open > div {
+        display: block;
+    }
+    div.open svg {
+        transform: scale(-1);
+    }
+    h4 {
+        font-family: adelle_sansregular, "Adelle Sans";   
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+    p {
+        margin-block: 10px;
+    }
+</style>

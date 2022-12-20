@@ -15,45 +15,33 @@ $: trimmedRows = rows.slice(start, end + 1)
 
 {#if totalRows && totalRows > perPage}
 <div class=pagination>
-    <button on:click={() => currentPage -= 1} 
-        disabled={currentPage === 0 ? true : false} 
-        aria-label="Pil venstre" 
-        aria-describedby=Forrige>
-        &larr;
-    </button>
-    <span id=prev class=sr-only>Vis forrige {perPage} salg</span>
-    <p>{start + 1} - {end + 1} av {totalRows}</p>
-    <button on:click={() => currentPage += 1} 
-        disabled={currentPage === totalPages - 1 ? true : false} 
-        aria-label="Pil høyre"
-        aria-describedby=Neste>
-        &rarr;
-    </button>
-    <span id=next class=sr-only>Vis forrige {perPage} salg</span>
+    <div>
+        {#if currentPage != 0}
+        <div on:click={() => currentPage -= 1} on:keypress={() => currentPage -= 1}>Forrige</div>
+        {/if}
+    </div>
+    <div>{start + 1} - {end + 1} av {totalRows}</div>
+    <div>
+        {#if currentPage != totalPages - 1}
+        <div on:click={() => currentPage += 1} on:keypress={() => currentPage += 1} style="text-align:right;">Neste</div>
+        {/if}
+    </div>
 </div>
 {/if}
 
 <style>
-.sr-only {
-    position: absolute;
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0;
-    border: 0;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-}
 .pagination {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     pointer-events: all;
     margin-top: 5px;
 }
-.pagination p {
-    margin: 0 1rem;
+.pagination > div {
+    min-width: 75px;
 }
-button {
-    display: flex;
+.pagination > div > div {
+    text-decoration: underline;
+    cursor: pointer;
 }
 </style>
