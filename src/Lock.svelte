@@ -14,7 +14,7 @@ function toggle(state) { dispatch( 'toggleLock', { state: state } ) }
 {#if locked}
 <div class=locked>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div on:click={() => { toggle(false) }}>
+    <div style="cursor:pointer" on:click={() => { toggle(false) }}>
         <Locked />
     </div>
     Klikk for å navigere i kartet.
@@ -34,6 +34,7 @@ function toggle(state) { dispatch( 'toggleLock', { state: state } ) }
     width: 20px;
     padding: 20px;
     z-index: 10001;
+    cursor: pointer;
 }
 .locked {
     position: absolute;

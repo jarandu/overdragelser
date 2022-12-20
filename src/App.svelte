@@ -18,35 +18,18 @@ let map,
 	salesList = [],
 	salesInView = [],
 	activeSalePolygons = L.featureGroup(),
-	freeSaleMarkers = L.featureGroup(),
-	otherSaleMarkers = L.featureGroup(),
 	salesMarkerGroup = new MarkerClusterGroup({ showCoverageOnHover: false, zoomToBoundsOnClick: true }),
-	filterFree = false,
 	showModal = false,
 	locked = false,
-	saleIcon = L.divIcon({ className: 'map-marker', html: '<svg><use xlink:href="#saleIcon"></svg>' }),
-	saleIconFree = L.divIcon({ className: 'map-marker free-sale', html: '<svg><use xlink:href="#saleIcon"></svg>' })
+	saleIcon = L.divIcon({ className: 'map-marker', html: '<svg><use xlink:href="#saleIcon"></svg>' })
 $:	activeSale = {}
 
 function getSalesInView() {
 	salesInView = []
 	let b = map.getBounds()
 	salesList.forEach(s => {
-    	if (b.contains([ s[4][0], s[4][1] ])) 
-			if (filterFree && s[5] == "Fritt salg") salesInView.push(s)
-			else if (!filterFree) salesInView.push(s)
+    	if (b.contains([ s[4][0], s[4][1] ])) salesInView.push(s)
 	})
-}
-function update() {
-	getSalesInView()
-	/* 	let center = map.getCenter()
-	let zoom = map.getZoom()
-	console.log("Fløy til " + center.lat.toPrecision(5) + ", " + center.lng.toPrecision(5) + " / " + zoom) */
-}
-function filterSalesToggle() {
-	if (filterFree) salesMarkerGroup.removeLayer(otherSaleMarkers)
-	else salesMarkerGroup.addLayer(otherSaleMarkers)
-	getSalesInView()
 }
 
 // Map setup
@@ -71,10 +54,9 @@ function populateMap() {
 				})
 				.on('click', () => {
 					markerClick(sale.saleId)
-					console.log("Klikket på " + sale.saleId)
+					console.log("SaleId: " + sale.saleId)
 				})
-			// Differentiate between free sales and all others
-			sale.type == "Fritt salg" ? layer.addTo(freeSaleMarkers) : layer.addTo(otherSaleMarkers)
+			layer.addTo(salesMarkerGroup)
 			salesList.push([
 				sale.saleId,
 				sale.date.substring(0,10),
@@ -85,13 +67,20 @@ function populateMap() {
 			])
 		}
 	}
-	// Add groups to map
-	salesMarkerGroup.addLayer(freeSaleMarkers).addLayer(otherSaleMarkers)
+	// Add to map
 	salesMarkerGroup.addTo(map)
 	salesList = salesList
+	// Focus to initial sale on map
 	if (initialSale != null) {
 		markerClick(initialSale)
 	}
+}
+function resizeMap() { if (map) { map.invalidateSize() } }
+function update() {
+	getSalesInView()
+	/* 	let center = map.getCenter()
+	let zoom = map.getZoom()
+	console.log("Fløy til " + center.lat.toPrecision(5) + ", " + center.lng.toPrecision(5) + " / " + zoom) */
 }
 
 // Get data
@@ -148,7 +137,6 @@ function markerClick(saleId, fromList = false) {
 	activeSale.sale = sales[i]
 	showModal = true
 }
-function resizeMap() { if (map) { map.invalidateSize() } }
 function closeModal() { 
 	showModal = !showModal
 	let center = map.getCenter()
@@ -158,10 +146,7 @@ function closeModal() {
 function locateUser() {
 	showModal = false
 	activeSale = {}
-	function success(position) { map.flyTo([position.coords.latitude, position.coords.longitude], 9, { duration: 0.5 }) }
-	function error() { console.log = 'Kunne ikke hente plassering.' }
-	if (!navigator.geolocation) { console.log = 'Geolokalisering funker ikke i nettleseren din.' }
-	else { navigator.geolocation.getCurrentPosition(success, error)	}
+	map.locate({setView: true, maxZoom: 9});
 }
 function setLock(state) {
 	if (state) {
@@ -183,9 +168,8 @@ function setLock(state) {
 <div class="map-container">
 	<div class="map" use:createMap>
 		{#if showModal}<Modal {activeSale} on:close={closeModal} />{/if}
-		<label>Vis kun fritt salg <input type=checkbox bind:checked={filterFree} on:change={filterSalesToggle} ></label>
 		<Locate on:locate={locateUser} />
-		<Lock on:toggleLock={(event) => { setLock(event.detail.state) }} locked={locked} />
+		<Lock on:toggleLock={(event) => { setLock(event.detail.state) }} {locked} />
 	</div>
 </div>
 <List rows={salesInView} on:rowClick={(event) => markerClick(event.detail.id, true)} />
@@ -213,30 +197,6 @@ main {
 .map {
 	height: 860px;
 	max-height: 70vh;
-}
-label {
-	position: absolute;
-	right: 10px;
-	top: 10px;
-	font-size: 14px;
-    display: flex;
-    width: fit-content;
-	border: 2px solid rgba(0,0,0,0.35);
-	border-radius: 4px;
-	padding: 4px 8px;
-	background: white;
-    align-items: center;
-    justify-content: flex-end;
-	z-index: 1000;
-	cursor: pointer;
-	color: black;
-    font-family: 'adelle_sansregular';
-    font-weight: normal;
-}
-input[type=checkbox] {
-	margin-left: 5px;
-	margin-top: 1px;
-	cursor: pointer;
 }
 .description {
 	margin: 10px auto;
