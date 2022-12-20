@@ -31,10 +31,12 @@ function toggle(state) { dispatch( 'toggleLock', { state: state } ) }
     position: absolute;
     top: 0;
     right: 0;
-    width: 20px;
     padding: 20px;
     z-index: 10001;
     cursor: pointer;
+}
+.unlocked svg {
+    width: 23px;
 }
 .locked {
     position: absolute;
