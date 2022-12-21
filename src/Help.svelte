@@ -8,7 +8,8 @@ let expand = false
         <svg viewBox="0 0 15 8" height=8 width=15><polyline points="1,1 8,7 14,1" /></svg> Hvordan bruker jeg kartet?
     </h4>
     <div>
-        <p>Klikk på kartmarkørene for å forstørre området, eller få mer infomasjon om det enkelte salget. Huk av for "fritt salg" i hjørnet av kartet for å vise eiendommene som er solgt til markedspris.</p>
+        <p>Klikk på markørene i kartet for å få mer informasjon om hvert enkeltsalg. Noen eiendommer kan ha flere markører, for eksempel i tilfeller hvor eiendommen(e) først arves og så selges på det åpne markedet.</p>
+        <p>1 dekar er det samme som 1 <em>mål</em> eller 1000 kvadratmeter.</p>
     </div>
 </div>
 

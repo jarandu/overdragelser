@@ -15,9 +15,8 @@ function toggle(state) { dispatch( 'toggleLock', { state: state } ) }
 <div class=locked>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div style="cursor:pointer" on:click={() => { toggle(false) }}>
-        <Locked />
+        Klikk for å navigere i kartet.
     </div>
-    Klikk for å navigere i kartet.
 </div>
 {:else}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -35,9 +34,6 @@ function toggle(state) { dispatch( 'toggleLock', { state: state } ) }
     z-index: 10001;
     cursor: pointer;
 }
-.unlocked svg {
-    width: 23px;
-}
 .locked {
     position: absolute;
     top: 0;
@@ -49,11 +45,12 @@ function toggle(state) { dispatch( 'toggleLock', { state: state } ) }
     justify-content: center;
     align-items: center;
     z-index: 10001;
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.45);
     font-size: 15px;
+    font-family: adelle_sansbold;
+    text-decoration: underline;
 }
 .locked div {
-    display: block;
-    width: 40px;
+    padding: 30px;
 }
 </style>

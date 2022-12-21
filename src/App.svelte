@@ -10,8 +10,10 @@ import Locate from "./Locate.svelte"
 import List from "./List.svelte"
 import Lock from "./Lock.svelte"
 import Help from "./Help.svelte"
+import Filter from "./Filter.svelte";
 
 export let initialSale
+export let showList
 
 let map,
 	sales = [], // Data array with sales objects
@@ -21,6 +23,7 @@ let map,
 	salesMarkerGroup = new MarkerClusterGroup({ showCoverageOnHover: false, zoomToBoundsOnClick: true }),
 	showModal = false,
 	locked = false,
+	isMobile = L.Browser.mobile,
 	saleIcon = L.divIcon({ className: 'map-marker', html: '<svg><use xlink:href="#saleIcon"></svg>' })
 $:	activeSale = {}
 
@@ -34,8 +37,10 @@ function getSalesInView() {
 
 // Map setup
 function createMap(container) {
-    map = L.map(container).setView([61, 9], 7).on('moveend', update)
-	if (L.Browser.mobile) {
+    map = L.map(container)
+		.setView([61, 9], 7)
+		.on('moveend', update)
+	if (isMobile) {
 		setLock(true)
 		console.log("User on mobile, locked.")
 	}
@@ -44,10 +49,15 @@ function createMap(container) {
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 	}).addTo(map)
 }
-function populateMap() {
-	if (salesMarkerGroup.getLayers() != null) salesMarkerGroup.clearLayers().remove()
+function populateMap(filters) {
+	let filteredSales
+	// Reset
+	salesList = []
+	salesMarkerGroup.clearLayers().remove()
+	// Filter
+	filters ? filteredSales = filterArr(sales, filters) : filteredSales = sales
 	// Create sale markers and list
-	for (let sale of sales) {
+	for (let sale of filteredSales) {
 		if(sale.prop[0].coord != null) { // TODO!!
 			let layer = L.marker(sale.prop[0].coord, {
 					icon: saleIcon
@@ -70,17 +80,16 @@ function populateMap() {
 	// Add to map
 	salesMarkerGroup.addTo(map)
 	salesList = salesList
-	// Focus to initial sale on map
-	if (initialSale != null) {
+	// Focus initial sale on map
+	if (initialSale != null && !filters) {
 		markerClick(initialSale)
 	}
+	// Update
+	update()
 }
 function resizeMap() { if (map) { map.invalidateSize() } }
 function update() {
 	getSalesInView()
-	/* 	let center = map.getCenter()
-	let zoom = map.getZoom()
-	console.log("Fløy til " + center.lat.toPrecision(5) + ", " + center.lng.toPrecision(5) + " / " + zoom) */
 }
 
 // Get data
@@ -156,7 +165,34 @@ function setLock(state) {
 		map._handlers.forEach((h) => { h.enable() })
 		locked = false
 	}
-	console.log("Locked: " + locked)
+}
+function filterArr(sales, config) { 
+    let filteredSales = [];
+    sales.forEach(sale => {
+      let containing = [];
+
+      //filterer på pris
+      if(config.price.filter === true) {
+        if(parseInt(sale.price) < parseInt(config.price.min) || parseInt(sale.price) >= parseInt(config.price.max))  return       
+      }
+
+      //filtrerer på type salg
+      if(config.type.filter == true) {
+        if(!config.type.type.includes(sale.type) )  return
+      }
+
+      if(config.prop.filter == true) {
+        
+        sale.prop.forEach( p => {
+          if(config.prop.type.includes(p.type) ) containing.push(p.type)
+        })
+
+        if (containing.length == 0) return
+      }
+      //console.log(sale.type, sale.price, containing);
+      filteredSales.push(sale)
+    });
+    return filteredSales
 }
 
 </script>
@@ -168,11 +204,14 @@ function setLock(state) {
 <div class="map-container">
 	<div class="map" use:createMap>
 		{#if showModal}<Modal {activeSale} on:close={closeModal} />{/if}
+		<Filter on:setFilters={(event) => populateMap(event.detail.config) } />
 		<Locate on:locate={locateUser} />
-		<Lock on:toggleLock={(event) => { setLock(event.detail.state) }} {locked} />
+		{#if isMobile}<Lock on:toggleLock={(event) => { setLock(event.detail.state) }} {locked} />{/if}
 	</div>
 </div>
+{#if showList == "show"}
 <List rows={salesInView} on:rowClick={(event) => markerClick(event.detail.id, true)} />
+{/if}
 <div class="description">
 	Vi tar forbehold om at beregnet eiendomsareal kan avvike noe fra faktisk areal. Informasjon/kartdata om eiendommene leveres av Kartverket.
 </div>

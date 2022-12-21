@@ -33,6 +33,7 @@
 }
 .marker-cluster span {
 	line-height: 32px;
+	color: black;
 }
 
 /* Custom marker */
