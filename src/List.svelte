@@ -28,6 +28,7 @@ function getLocalDateFormat(date) {
 
 </script>
 
+<div class=list-heading>Følgende salg er synlige i kartet. &darr; Trykk på et salg for å se mer. Du kan også sortere listen på dato/pris.</div>
 <div class=list-container>
 	<div>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -41,15 +42,19 @@ function getLocalDateFormat(date) {
 	<div on:click={rowClick(sale[0])}>
 		<div>{getLocalDateFormat(sale[1])}</div>
 		<div>{sale[2]}</div>
-		<div>{@html sale[3] == 0 ? "<em>" + sale[5] + "</em>" : sale[3].toLocaleString() + " kr"}</div>
+		<div>{@html sale[3] == 0 ? "<em>" + sale[5] + " (0 kr)</em>" : sale[3].toLocaleString() + " kr"}</div>
 	</div>
 	{/each}
 	<Pagination rows={sortedRows} perPage={15} bind:trimmedRows={activeListItems} />
 </div>
 
 <style>
-.list-container { 
+.list-heading {
 	margin-top: 15px;
+	font-size: 0.9em;
+}
+.list-container { 
+	margin-top: 10px;
     color: black;
 }
 .list-container > div {

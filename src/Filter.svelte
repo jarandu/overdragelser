@@ -94,29 +94,31 @@ let hidden = true
 
 <div class="filter-modal" class:hidden={hidden}>
     <div class="modal-nav">
-        <svg on:click={() => { hidden = true }} on:keypress={() => { hidden = true }} viewBox="0 0 10 10"><polyline points="1,9 9,1 5,5 1,1 9,9"></polyline></svg>
+        <svg on:click={() => { hidden = true }} on:keypress={(event) => { hidden = true }} viewBox="0 0 10 10"><polyline points="1,9 9,1 5,5 1,1 9,9"></polyline></svg>
     </div>
-    <div class="input-group">
-        <div class="group-heading">Salgspris</div>
-        <label for="price-min"><span class="fromto">Fra</span><input type="number" id="price-min" name="price-min" min="0" max="10000000" steps="100000"> kr</label>
-        <label for="price-max"><span class="fromto">Til</span><input type="number" id="price-max" name="price-max" min="0" max="100000000" steps="100000"> kr</label>
-    </div>
-    <div class="input-group">
-        <div class="group-heading">Omsetningstype</div>
-        <label for="alle-salg"><input type="radio" id="alle-salg" name="sales-type" value="Alle" checked> Alle</label>   
-        <label for="fritt-salg"><input type="radio" id="fritt-salg" name="sales-type" value="Fritt salg"> Fritt salg</label>   
-    </div>
-    <div class="input-group">
-        <div class="group-heading">Bebyggelse</div>
-        <label for="alle"><input type="radio" id="alle" name="prop-type" value="Alle" checked> Alle</label>
-        <label for="bolig"><input type="radio" id="bolig" name="prop-type" value="Bolig"> Bolig</label>
-        <label for="annen"><input type="radio" id="annen" name="prop-type" value="Annen"> Annen bebyggelse</label>
-        <label for="ubebygd"><input type="radio" id="ubebygd" name="prop-type" value="Ubebygget"> Ubebygd</label>
-    </div>
-    <div class="submit">
-        <button on:click={setConfig} on:keypress={setConfig}>Filtrer</button>
-        <div class="reset" on:click={reset} on:keypress={reset}>Nullstill</div>
-    </div>
+    <form>
+        <div class="input-group">
+            <div class="group-heading">Salgspris</div>
+            <label for="price-min"><span class="fromto">Fra</span><input type="number" id="price-min" name="price-min" min="0" max="10000000" steps="100000"> kr</label>
+            <label for="price-max"><span class="fromto">Til</span><input type="number" id="price-max" name="price-max" min="0" max="100000000" steps="100000"> kr</label>
+        </div>
+        <div class="input-group">
+            <div class="group-heading">Omsetningstype</div>
+            <label for="alle-salg"><input type="radio" id="alle-salg" name="sales-type" value="Alle" checked> Alle</label>   
+            <label for="fritt-salg"><input type="radio" id="fritt-salg" name="sales-type" value="Fritt salg"> Fritt salg</label>   
+        </div>
+        <div class="input-group">
+            <div class="group-heading">Bebyggelse</div>
+            <label for="alle"><input type="radio" id="alle" name="prop-type" value="Alle" checked> Alle</label>
+            <label for="bolig"><input type="radio" id="bolig" name="prop-type" value="Bolig"> Bolig</label>
+            <label for="annen"><input type="radio" id="annen" name="prop-type" value="Annen"> Annen bebyggelse</label>
+            <label for="ubebygd"><input type="radio" id="ubebygd" name="prop-type" value="Ubebygget"> Ubebygd</label>
+        </div>
+        <div class="submit">
+            <button type="submit" on:click={(event) => {event.preventDefault(); setConfig()}} on:keypress={(event) => {event.preventDefault(); setConfig()}}>Filtrer</button>
+            <div class="reset" on:click={reset} on:keypress={reset}>Nullstill</div>
+        </div>
+    </form>
 </div>
 
 <style>
@@ -153,10 +155,12 @@ let hidden = true
     box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.35);
     transition: .4s ease-in;
     line-height: 1.3;
-    display: flex;
-    flex-direction: column;
     accent-color: #4d6711;
     --vertical: 15px;
+}
+form {
+    display: flex;
+    flex-direction: column;
     gap: var(--vertical);
 }
 .hidden {
