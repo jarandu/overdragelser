@@ -99,7 +99,7 @@ onMount(async () => {
 		.then(data => {
 			sales = data
 			populateMap()
-			getSalesInView()
+			getSalesInView()			
 		})
 		.catch(error => { console.log(error) })
 })
