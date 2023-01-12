@@ -84,7 +84,7 @@ function reset() {
     setConfig()
 }
 
-let hidden = true
+let hidden = false
 
 </script>
 
