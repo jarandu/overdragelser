@@ -28,7 +28,7 @@ function getLocalDateFormat(date) {
 
 </script>
 
-<div class=list-heading>Følgende salg er synlige i kartet. &darr; Trykk på et salg for å se mer. Du kan også sortere listen på dato/pris.</div>
+<div class=list-heading>Lista nedenfor viser salg som er synlige i kartet. &darr; Trykk på et salg for å se mer. Du kan også sortere lista på dato/pris.</div>
 <div class=list-container>
 	<div>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -51,7 +51,8 @@ function getLocalDateFormat(date) {
 <style>
 .list-heading {
 	margin-top: 15px;
-	font-size: 0.9em;
+	font-size: 14px;
+	line-height: 1.3;
 }
 .list-container { 
 	margin-top: 10px;
